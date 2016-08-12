@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <title>Wave On String</title>
+
+        <style>
+            html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0px;
+                border: 0px;
+                padding: 0px;
+                overflow: hidden;
+                display: block;
+            }
+            
+            button {
+                background-color: white;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                cursor: pointer;
+                color: black;
+                border: 3px solid #888;
+                padding: 8px 24px;
+                -webkit-transition-duration: 0.4s;
+                box-shadow: 4px 6px 6px 0 rgba(0,0,0,0.2);
+            }
+            
+            button:hover {
+                border: 3px solid #666;
+                background-color: #666;
+                color: white;
+            }
+
+            button:active {
+                -webkit-transition-duration: 0s;
+                box-shadow: 2px 3px 3px 0 rgba(0,0,0,0.2);
+                transform: translateY(2px);
+            }
+            
+            input {
+                margin: 0px;
+            }
+            
+        </style>
+        
+    </head>
+
+    <body onload="init();">
+
+        <div style='height: 5%; max-height: 54px; padding: 4px'>
+            <img src="img/USydLogo.svg" style='height: 100%; max-height: 100%;'>
+        </div>
+
+        <div style="margin-left: 10px; margin-right: 10px; display: block;">
+            <div style="display: table; width: 100%; height: 100%;">
+
+                <div style="display: table-cell; width: 1px;">
+                    <canvas id = '_canvas' style="border: 2px solid silver;">
+                        Canvas display is not supported by this browser.
+                    </canvas>
+
+                    <table>
+                        <tr>
+                            <td><button type="button" id='btn_restart' onclick="handleReload()">Restart</button></td>
+                            <td><button type="button" id='btn_play' onclick="handlePlayPause()">Pause</button></td>
+                        </tr>
+                    </table>
+
+                </div>
+
+                <div style="display: table-cell; min-width: 4px; max-width: 4px"></div>
+
+                <div style="display: table-cell; width: 160px; max-width: 20%; vertical-align: top; padding: 8px;">
+
+                    <table id='stat' style="font: italic small-caps bolder 18px cursive; color: #888;">
+                        <tr>
+                            <td id = 'veloc'> Velocity: </td>
+                            <td id = 'velocVal' contentEditable></td>
+                            <td> m/s </td>
+                        </tr>
+                        <tr>
+                            <td id = 'amp'> Amplitude: </td>
+                            <td id = 'ampVal' contentEditable></td>
+                            <td> m </td>
+                        </tr>
+                        <tr>
+                            <td id = 'freq'> Frequency: </td>
+                            <td id = 'freqVal' contentEditable></td>
+                            <td> Hz </td>
+                        </tr>
+                    </table>
+
+                    <table id='mode' style="margin-top: 20px; font: italic small-caps bolder 18px cursive; color: #888;">
+                        
+						<tr>
+							<td><img src="./img/diyLogo.png" style='height: 18px;'></td>
+							<td><img id = 'diyCheckBox' src="./img/unchecked.png" style='height: 18px;' onclick="handleCheckBox(this)"></td>
+						</tr>
+						<tr>
+							<td><img src="./img/pokemonLogo.png" style='height: 18px;'></td>
+							<td><img id = 'pokemonCheckBox' src="./img/checked.png" style='height: 18px;' onclick="handleCheckBox(this)"></td>
+						</tr>
+						<tr>
+							<td>Fixed End</td>
+							<td><input id='rb_fixed' type="radio" name="end" onclick="handleEndType(this)"></td>
+						</tr>
+						<tr>
+							<td>Loose End</td>
+							<td><input id='rb_loose' type="radio" name="end" onclick="handleEndType(this)"></td>
+						</tr>
+						<tr>
+							<td>No End</td>
+							<td><input id='rb_none' type="radio" name="end" onclick="handleEndType(this)"></td>
+						</tr>
+                    </table>
+
+                    <div style='margin-top: 20px;'>
+                        <p>Tension</p>
+                        <input type="range" style="width: 100%;" value="0" id = 'tension'>
+                        <p>Damping</p>
+                        <input type="range" style="width: 100%;" value="0" id = 'tension'>
+                    </div>
+
+
+                </div>
+
+                <div style="display: table-cell; width: 100%;"></div>
+            </div>
+        </div>
+
+        <script src="easeljs-0.8.2.min.js"></script>
+        <script src="preloadjs-0.6.2.min.js"></script>
+        <script src="Experiment.js"></script>
+    </body>
+
+</html>
