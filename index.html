@@ -43,6 +43,11 @@
             input {
                 margin: 0px;
             }
+
+            .slider {
+                font: italic small-caps bolder 18px cursive;
+                color: #40b5ff;
+            }
             
         </style>
         
@@ -66,6 +71,12 @@
                         <tr>
                             <td><button type="button" id='btn_restart' onclick="handleReload()">Restart</button></td>
                             <td><button type="button" id='btn_play' onclick="handlePlayPause()">Pause</button></td>
+                            <td><select id = 'pokemonType'>
+                                <option value = 'pikachu'>Pikachu</option>
+                                <option value = 'snory'>Snory</option>
+                                <option value = 'mew'>Mew</option>>
+                            </select>
+                            </td>
                         </tr>
                     </table>
 
@@ -95,36 +106,36 @@
 
                     <table id='mode' style="margin-top: 20px; font: italic small-caps bolder 18px cursive; color: #888;">
                         
-						<tr>
-							<td><img src="./img/diyLogo.png" style='height: 18px;'></td>
-							<td><img id = 'diyCheckBox' src="./img/unchecked.png" style='height: 18px;' onclick="handleCheckBox(this)"></td>
-						</tr>
-						<tr>
-							<td><img src="./img/pokemonLogo.png" style='height: 18px;'></td>
-							<td><img id = 'pokemonCheckBox' src="./img/checked.png" style='height: 18px;' onclick="handleCheckBox(this)"></td>
-						</tr>
-						<tr>
-							<td>Fixed End</td>
-							<td><input id='rb_fixed' type="radio" name="end" onclick="handleEndType(this)"></td>
-						</tr>
-						<tr>
-							<td>Loose End</td>
-							<td><input id='rb_loose' type="radio" name="end" onclick="handleEndType(this)"></td>
-						</tr>
-						<tr>
-							<td>No End</td>
-							<td><input id='rb_none' type="radio" name="end" onclick="handleEndType(this)"></td>
-						</tr>
+                        <tr>
+                            <td><img src="./img/diyLogo.png" style='height: 18px;'></td>
+                            <td><img id = 'diyCheckBox' src="./img/unchecked.png" style='height: 18px;' onclick="handleCheckBox(this)"></td>
+                        </tr>
+                        <tr>
+                            <td><img src="./img/pokemonLogo.png" style='height: 18px;'></td>
+                            <td><img id = 'pokemonCheckBox' src="./img/checked.png" style='height: 18px;' onclick="handleCheckBox(this)"></td>
+                        </tr>
+                        <tr>
+                            <td>Fixed End</td>
+                            <td><input id='rb_fixed' type="radio" name="end" checked = "true" onclick="handleEndType(this)"></td>
+                        </tr>
+                        <tr>
+                            <td>Loose End</td>
+                            <td><input id='rb_loose' type="radio" name="end" onclick="handleEndType(this)"></td>
+                        </tr>
+                        <tr>
+                            <td>No End</td>
+                            <td><input id='rb_none' type="radio" name="end" onclick="handleEndType(this)"></td>
+                        </tr>
                     </table>
 
                     <div style='margin-top: 20px;'>
-                        <p>Tension</p>
-                        <input type="range" style="width: 100%;" value="0" id = 'tension'>
-                        <p>Damping</p>
-                        <input type="range" style="width: 100%;" value="0" id = 'tension'>
+                        <p class="slider">Tension</p>
+                        <input type="range"  value="100" id = 'tension' oninput="handleSlider((this.value/100), 'tension')" onchange="handleSlider((this.value/100), 'tension')">
+                        <p class="slider">Damping</p>
+                        <input type="range" value="0" id = 'damping' oninput="handleSlider((this.value/100), 'damping')" onchange="handleSlider((this.value/100), 'damping')">
+                        <p class="slider">Wave Length</p>
+                        <input type="range" value="50" id = 'wavelen' oninput="handleSlider((this.value/100), 'wavelen')" onchange="handleSlider((this.value/100), 'wavelen')">
                     </div>
-
-
                 </div>
 
                 <div style="display: table-cell; width: 100%;"></div>
@@ -133,7 +144,7 @@
 
         <script src="easeljs-0.8.2.min.js"></script>
         <script src="preloadjs-0.6.2.min.js"></script>
-        <script src="Experiment.js"></script>
+        <script src="exp.js"></script>
     </body>
 
 </html>
