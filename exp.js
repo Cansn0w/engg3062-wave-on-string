@@ -119,7 +119,6 @@ var imgs = null
 
 // simulation state
 var mode = 'pokemon'  // options : { 'diy', 'pokemon'}
-var pmName = 'snory'
 var endType = 'fixed'     // options : { 'fixed', 'loose', 'none'}
 var damping, tension
 var maxTension = 1, maxDamping = 0.08, maxWavelen = 50
@@ -128,11 +127,8 @@ var wavelen = maxWavelen * 0.5, amp = 50
 
 // wave string
 var str = initWaveStr()
-
-var ctr = wavelen, ls = []
-for (var i = 0; i < wavelen; i ++) 
-    ls[i] = Math.sin(2 * Math.PI * i / wavelen) * amp
-ls = ls.concat(ls.slice(0).reverse());
+var ctr = wavelen
+var ls = cacheWave(wavelen)
 
 
 /*************** 
@@ -161,7 +157,7 @@ function start() {
         objs[id].name = id
 	}
     // load canvas scene
-	loadPokemonScene(pmName)
+	loadPokemonScene('pikachu')
 }
 
 function update(evt) {
@@ -264,7 +260,7 @@ function handleCheckBox(cb) {
 	if (id == 'diyCheckBox')
 		loadDiyScene()
 	else if (id == 'pokemonCheckBox')
-		loadPokemonScene(pmName)
+		loadPokemonScene('pikachu')
 
 	// finally, untick the other checkbox
 	var otherCheckbox = document.getElementById(id == 'diyCheckBox' ? 'pokemonCheckBox' : 'diyCheckBox')
@@ -287,12 +283,20 @@ function handleSlider(pct, attr) {
     console.log(pct)
     switch (attr) {
         case 'tension': str.tension = maxTension * pct
-        break
+            break
         case 'damping': str.damping = maxDamping * pct
-        break
-        case 'wavelen': wavelen = maxWavelen * pct
-        break
+            break
+        case 'wavelen': 
+            wavelen = maxWavelen * pct
+            ls = cacheWave(wavelen)
+            break
     }
+}
+
+function handleSelect() {
+    var selector = document.getElementById('pokemonType')
+    var pkname = selector.options[selector.selectedIndex].value
+    pokemon.image.src = './img/' + pkname + '.png'
 }
 
 function handleReload() {
@@ -306,4 +310,12 @@ function initWaveStr() {
     var str = WaveString(100)
     str.moveTo((1/10)*w + 10, (7/8)*w + 50, h/2 + 20);
     return str
+}
+
+function cacheWave(len) {
+    var lst = []
+    for (var i = 0; i < len; i ++) 
+        lst[i] = Math.sin(2 * Math.PI * i / len) * amp
+    lst = lst.concat(lst.slice(0).reverse());
+    return lst
 }
