@@ -64,28 +64,29 @@ function WaveString(length) {
     
     obj.update = function() {
         var dampRatio = (1 - obj.damping)
+        var len = obj.length
         // update acc based on position;
-        for (var i = 1; i < obj.length; i++) {
+        for (var i = 1; i < len; i++) {
             obj.arr[i].acc = ((obj.arr[i-1].pos + obj.arr[i+1].pos) / 2 - obj.arr[i].pos) * obj.tension;
         }
 
         // update pos and vel;
         if (obj.end == END.FIXED) {
             obj.tail.pos = obj.tail.vel = obj.tail.acc = 0
+            receiver.y = h/2 + obj.tail.pos
         }
         else if (obj.end == END.LOOSE) {
-            obj.tail.acc = (obj.arr[obj.length-1].pos - obj.tail.pos) / 2 * obj.tension;
+            obj.tail.acc = (obj.arr[len-1].pos - obj.tail.pos) / 2 * obj.tension;
             obj.tail.vel = (obj.tail.vel + obj.tail.acc) * dampRatio;
             obj.tail.pos += obj.tail.vel;
-
+            receiver.y = h/2 + obj.tail.pos
         }
         else if (obj.end == END.NONE) {
-            // WTF o.o?
+            obj.tail.pos = 2 * obj.arr[len - 1].pos - obj.arr[len - 1].pos
         }
-        receiver.y = h/2 + obj.tail.pos
 
         // update pos and vel;
-        for (var i = 1; i < obj.length; i++) {
+        for (var i = 1; i < len; i++) {
             obj.arr[i].vel = (obj.arr[i].vel + obj.arr[i].acc) * dampRatio;
             obj.arr[i].pos += obj.arr[i].vel;
         }
@@ -262,11 +263,20 @@ function loadPokemonScene(name) {
  }
 
  function loadReceiver() {
-    receiver = objs['e_sad'].clone()
-    rLamp = objs['lamp'].clone()    
-    receiver.x = (7/8)*w + 30, receiver.y = h/2
-    rLamp.x = (7/8)*w, rLamp.y = h/5
-    stage.addChild(rLamp, receiver)
+    //TODO
+    stage.removeChild(receiver, rLamp)
+    if (str.end != END.NONE) {
+        receiver = str.end == END.FIXED ? objs['e_sad'].clone() : objs['e_dizzy'].clone()
+        rLamp = objs['lamp'].clone()    
+        receiver.x = (7/8)*w + 30, receiver.y = h/2
+        rLamp.x = (7/8)*w, rLamp.y = h/5
+        stage.addChild(rLamp, receiver)
+    } 
+    else{
+        receiver = objs['blackhole'].clone()
+        receiver.x = (7/8)*w - 50, receiver.y = h/2 - 60
+        stage.addChild(receiver)
+    }
  }
 
 /*******************
@@ -292,17 +302,15 @@ function handleEndType(rb) {
     switch (rbname.substring(rbname.indexOf('_') + 1, rbname.length)) {
         case 'fixed': 
         str.end = END.FIXED
-        receiver.image.src = './img/e_sad.png'
         break
         case 'loose': 
         str.end = END.LOOSE
-        receiver.image.src = './img/e_dizzy.png'
         break
         case 'none':    
         str.end = END.NONE
-        receiver.image.src = './img/blackhole.png' 
         break
     }
+    loadReceiver()
 }
 
 function handlePlayPause() {
