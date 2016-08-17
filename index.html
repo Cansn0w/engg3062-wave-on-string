@@ -70,7 +70,7 @@
                     <table>
                         <tr>
                             <td><button type="button" id='btn_restart' onclick="handleReload()">Restart</button></td>
-                            <td><button type="button" id='btn_play' onclick="handlePlayPause()">Pause</button></td>
+                            <td><button type="button" id='btn_play' onclick="handlePlayPause()">Play</button></td>
                             <td><select id = 'pokemonType' onchange="handleSelect()">
                                 <option value = 'pikachu'>Pikachu</option>
                                 <option value = 'snory'>Snory</option>
@@ -84,23 +84,14 @@
 
                 <div style="display: table-cell; min-width: 4px; max-width: 4px"></div>
 
-                <div style="display: table-cell; width: 160px; max-width: 20%; vertical-align: top; padding: 8px;">
+                <div style="display: table-cell; width: 160px; max-width: 25%; vertical-align: top; padding: 8px;">
 
                     <table id='stat' style="font: italic small-caps bolder 18px cursive; color: #888;">
                         <tr>
-                            <td id = 'veloc'> Velocity: </td>
-                            <td id = 'velocVal' contentEditable></td>
-                            <td> m/s </td>
+                            <td>Wave Function: </td>
                         </tr>
                         <tr>
-                            <td id = 'amp'> Amplitude: </td>
-                            <td id = 'ampVal' contentEditable></td>
-                            <td> m </td>
-                        </tr>
-                        <tr>
-                            <td id = 'freq'> Frequency: </td>
-                            <td id = 'freqVal' contentEditable></td>
-                            <td> Hz </td>
+                            <td id = 'veloc'> V = f * &lambda; </td>
                         </tr>
                     </table>
 

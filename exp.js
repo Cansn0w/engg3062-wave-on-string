@@ -31,8 +31,9 @@ function CanvasCtl(id, width, height) {
 function WaveString(length) {
     var obj = {};
     
-    obj.tension = (document.getElementById('tension').value / 100) * maxTension;
-    obj.damping = (document.getElementById('damping').value / 100) * maxDamping;
+    obj.tension = (document.getElementById('tension').value / 100) * maxTension
+    obj.damping = (document.getElementById('damping').value / 100) * maxDamping
+    obj.end = END.FIXED
     obj.length = length;
     
     obj.arr = [];
@@ -45,11 +46,10 @@ function WaveString(length) {
     obj.tail = obj.arr[length];
     
     obj.shape = new createjs.Shape();
-    obj.shape.name = 'waveString'
     
-    obj.x0 = -1, obj.x1 = -1
-    obj.y = -1, obj.y1 = -1
-
+    obj.x0 = -1
+    obj.x1 = -1
+    obj.y = -1
     obj.colour = '#00f';
     
     obj.moveTo = function (left, right, height) {
@@ -63,17 +63,37 @@ function WaveString(length) {
     }
     
     obj.update = function() {
+        var dampRatio = (1 - obj.damping)
         // update acc based on position;
         for (var i = 1; i < obj.length; i++) {
             obj.arr[i].acc = ((obj.arr[i-1].pos + obj.arr[i+1].pos) / 2 - obj.arr[i].pos) * obj.tension;
         }
+
+        // update pos and vel;
+        if (obj.end == END.FIXED) {
+            obj.tail.pos = obj.tail.vel = obj.tail.acc = 0
+        }
+        else if (obj.end == END.LOOSE) {
+            obj.tail.acc = (obj.arr[obj.length-1].pos - obj.tail.pos) / 2 * obj.tension;
+            obj.tail.vel = (obj.tail.vel + obj.tail.acc) * dampRatio;
+            obj.tail.pos += obj.tail.vel;
+
+        }
+        else if (obj.end == END.NONE) {
+            // WTF o.o?
+        }
+        receiver.y = h/2 + obj.tail.pos
+
         // update pos and vel;
         for (var i = 1; i < obj.length; i++) {
-            obj.arr[i].vel += obj.arr[i].acc;
-            obj.arr[i].vel *= (1 - obj.damping)
+            obj.arr[i].vel = (obj.arr[i].vel + obj.arr[i].acc) * dampRatio;
             obj.arr[i].pos += obj.arr[i].vel;
         }
-        
+
+        obj.draw()
+    }
+
+    obj.draw = function() {
         // update drawing;
         var x = obj.x0;
         var step = (obj.x1 - obj.x0) / obj.arr.length;
@@ -82,8 +102,7 @@ function WaveString(length) {
         obj.shape.graphics.setStrokeStyle(2).beginStroke(obj.colour);
         
         obj.shape.graphics.moveTo(x, obj.y + obj.head.pos);
-        var len = obj.arr.length;
-        for (var i = 1; i < len; i++) {
+        for (var i = 1; i < obj.arr.length;i++) {
             x += step;
             obj.shape.graphics.lineTo(x, obj.y + obj.arr[i].pos);
         }
@@ -94,9 +113,9 @@ function WaveString(length) {
     return obj;
 }
 
-/************ WO SHI FEN GE XIAN ************/
-// com
+// - - - - - WO SHI FEN GE XIAN - - - - - //
 var w = 1300, h = 650
+var END = { FIXED : 0, LOOSE : 1, NONE : 2 }
 var stage, canvas
 var manifest = [
 	{src: './img/pikachu.png', id: 'pikachu'},
@@ -108,22 +127,19 @@ var manifest = [
 	{src: './img/e_sad.png',   id: 'e_sad'},
 	{src: './img/e_unamused.png', 	id: 'e_unamused'},
 	{src: './img/e_dizzy.png', 		id: 'e_dizzy'},
-	{src: './img/jump_bed.png', 	id : 'jump_bed'}
+	{src: './img/jump_bed.png', 	id: 'jump_bed'},
+    {src: './img/blackhole.png',    id: 'blackhole'}
 ]
 var loadQueue = null
 
 // UI components
 var objs = {}, stats = {}
 var pokemon, pulser, receiver, jumpBed, lLamp, rLamp
-var imgs = null
 
 // simulation state
-var mode = 'pokemon'  // options : { 'diy', 'pokemon'}
-var endType = 'fixed'     // options : { 'fixed', 'loose', 'none'}
 var damping, tension
-var maxTension = 1, maxDamping = 0.08, maxWavelen = 50
+var maxTension = 2, maxDamping = 0.08, maxWavelen = 80
 var wavelen = maxWavelen * 0.5, amp = 50
-
 
 // wave string
 var str = initWaveStr()
@@ -144,6 +160,7 @@ function init() {
 	createjs.Ticker.addEventListener('tick', update)
 	window.addEventListener('resize', resize, false);
     resize()
+
     // preload images
     loadQueue = new createjs.LoadQueue(false)
     loadQueue.addEventListener('complete', start)
@@ -158,6 +175,8 @@ function start() {
 	}
     // load canvas scene
 	loadPokemonScene('pikachu')
+    update(createjs.Ticker)
+    createjs.Ticker.paused = true
 }
 
 function update(evt) {
@@ -172,6 +191,8 @@ function update(evt) {
 }
 
 function refresh() {
+    for (var c in stage.children) 
+        stage.children[c].removeAllEventListeners()
     stage.removeAllChildren()
     str = initWaveStr()
 }
@@ -231,8 +252,9 @@ function loadPokemonScene(name) {
  	pulser.x = (1/14)*w + 30, pulser.y = h/2
 
  	pulser.on('pressmove', function(evt){
-        var diff = evt.stageY - pulser.y + pulser.image.height
+        var diff = evt.stageY / stage.scaleY - pulser.y // pulser.image.height
  		pulser.y += pulser.y + diff < h/5 || pulser.y + diff > (8/9) * h ? 0 : diff
+        str.head.pos = evt.stageY / stage.scaleY - h/2
  	})
 
  	stage.addChild(str.shape, lLamp, pulser)
@@ -240,10 +262,11 @@ function loadPokemonScene(name) {
  }
 
  function loadReceiver() {
- 	receiver = objs['e_dizzy'], rLamp = objs['lamp'].clone()
- 	receiver.x = (7/8)*w + 30, receiver.y = h/2
- 	rLamp.x = (7/8)*w, rLamp.y = h/5
- 	stage.addChild(rLamp, receiver)
+    receiver = objs['e_sad'].clone()
+    rLamp = objs['lamp'].clone()    
+    receiver.x = (7/8)*w + 30, receiver.y = h/2
+    rLamp.x = (7/8)*w, rLamp.y = h/5
+    stage.addChild(rLamp, receiver)
  }
 
 /*******************
@@ -251,9 +274,6 @@ function loadPokemonScene(name) {
  *******************/
 function handleCheckBox(cb) {
 	var id = cb.id
-	if (mode === id.substring(0, id.indexOf('CheckBox')))
-		return
-	mode = id.substring(0, id.indexOf('CheckBox'))
 	cb.src = './img/checked.png'
 
 	// refresh canvas  
@@ -269,7 +289,20 @@ function handleCheckBox(cb) {
 
 function handleEndType(rb) {
 	var rbname = rb.id
-	endType = rbname.substring(rbname.indexOf('_') + 1, rbname.length)
+    switch (rbname.substring(rbname.indexOf('_') + 1, rbname.length)) {
+        case 'fixed': 
+        str.end = END.FIXED
+        receiver.image.src = './img/e_sad.png'
+        break
+        case 'loose': 
+        str.end = END.LOOSE
+        receiver.image.src = './img/e_dizzy.png'
+        break
+        case 'none':    
+        str.end = END.NONE
+        receiver.image.src = './img/blackhole.png' 
+        break
+    }
 }
 
 function handlePlayPause() {
@@ -280,7 +313,6 @@ function handlePlayPause() {
 }
 
 function handleSlider(pct, attr) {
-    console.log(pct)
     switch (attr) {
         case 'tension': str.tension = maxTension * pct
             break
@@ -307,7 +339,7 @@ function handleReload() {
  * HELPER METHODS  *
  *******************/
 function initWaveStr() {
-    var str = WaveString(100)
+    var str = WaveString(200)
     str.moveTo((1/10)*w + 10, (7/8)*w + 50, h/2 + 20);
     return str
 }
