@@ -82,7 +82,8 @@ function WaveString(length) {
             receiver.y = h/2 + obj.tail.pos
         }
         else if (obj.end == END.NONE) {
-            obj.tail.pos = 2 * obj.arr[len - 1].pos - obj.arr[len - 1].pos
+            obj.tail.pos = obj.arr[len - 1].pos
+            obj.tail.vel = obj.tail.acc = 0
         }
 
         // update pos and vel;
