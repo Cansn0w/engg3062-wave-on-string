@@ -17,6 +17,7 @@
             
             button {
                 background-color: white;
+
                 text-align: center;
                 text-decoration: none;
                 display: inline-block;
@@ -27,11 +28,15 @@
                 -webkit-transition-duration: 0.4s;
                 box-shadow: 4px 6px 6px 0 rgba(0,0,0,0.2);
             }
-            
+
+            /*  Red:#CE1127;  Yellow:#F9B72B; Blue: #11406A ;  */
+
             button:hover {
-                border: 3px solid #666;
-                background-color: #666;
-                color: white;
+                border: 3px solid #11406A;
+                /*background-color: #666;*/
+                background-color: #F9B72B;
+                /*color: white;*/
+                color: #CE1127;
             }
 
             button:active {
@@ -55,8 +60,8 @@
 
     <body onload="init();">
 
-        <div style='height: 5%; max-height: 54px; padding: 4px'>
-            <img src="img/USydLogo.svg" style='height: 100%; max-height: 100%;'>
+        <div style='height: 8%; max-height: 80px; padding: 10px'>
+            <img src="img/Usyd_new_logo.png" style='height: 100%; max-height: 100%;'>
         </div>
 
         <div style="margin-left: 10px; margin-right: 10px; display: block;">
@@ -86,7 +91,7 @@
 
                 <div style="display: table-cell; width: 160px; max-width: 25%; vertical-align: top; padding: 8px;">
 
-                    <table id='stat' style="font: italic small-caps bolder 18px cursive; color: #888;">
+                    <table id='stat' style="font: italic small-caps bolder 18px cursive; color: #CE1127;">
                         <tr>
                             <td>Wave Function: </td>
                         </tr>
@@ -95,8 +100,8 @@
                         </tr>
                     </table>
 
-                    <table id='mode' style="margin-top: 20px; font: italic small-caps bolder 18px cursive; color: #888;">
-                        
+                    <!-- <table id='mode' style=" font: italic small-caps bolder 18px cursive; color: #888;"> -->
+                    <table id='mode' style=" font: italic small-caps bolder 18px cursive; color: #CE1127;">    
                         <tr>
                             <td><img src="./img/diyLogo.png" style='height: 18px;'></td>
                             <td><img id = 'diyCheckBox' src="./img/unchecked.png" style='height: 18px;' onclick="handleCheckBox(this)"></td>

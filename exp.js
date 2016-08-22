@@ -73,13 +73,11 @@ function WaveString(length) {
         // update pos and vel;
         if (obj.end == END.FIXED) {
             obj.tail.pos = obj.tail.vel = obj.tail.acc = 0
-            receiver.y = h/2 + obj.tail.pos
         }
         else if (obj.end == END.LOOSE) {
             obj.tail.acc = (obj.arr[len-1].pos - obj.tail.pos) / 2 * obj.tension;
             obj.tail.vel = (obj.tail.vel + obj.tail.acc) * dampRatio;
             obj.tail.pos += obj.tail.vel;
-            receiver.y = h/2 + obj.tail.pos
         }
         else if (obj.end == END.NONE) {
             obj.tail.pos = obj.arr[len - 1].pos
@@ -111,6 +109,14 @@ function WaveString(length) {
         
         obj.shape.graphics.endStroke();
     }
+
+    obj.reset = function() {
+        for (var i = 0; i < obj.length + 1; i ++) {
+            obj.arr[i].pos = 0;
+            obj.arr[i].vel = 0;
+            obj.arr[i].acc = 0;
+        }
+    }
     
     return obj;
 }
@@ -119,6 +125,7 @@ function WaveString(length) {
 var w = 1300, h = 650
 var END = { FIXED : 0, LOOSE : 1, NONE : 2 }
 var stage, canvas
+var playing = false
 var manifest = [
 	{src: './img/pikachu.png', id: 'pikachu'},
 	{src: './img/mew.png', 	   id: 'mew'},
@@ -178,17 +185,22 @@ function start() {
     // load canvas scene
 	loadPokemonScene('pikachu')
     update(createjs.Ticker)
-    createjs.Ticker.paused = true
+    createjs.Ticker.paused = false
 }
 
 function update(evt) {
 	if (!evt.paused) {
-        if (ctr < wavelen) {
-            ++ctr
-            str.head.pos = ls[ctr]
+        if (playing) {
+            if (ctr < wavelen) {
+                ++ctr
+                str.head.pos = ls[ctr]
+            }
+
+            str.update()
+            if (str.end != END.NONE)
+                receiver.y = h/2 + str.tail.pos
         }
 		canvas.update();
-		str.update()
 	}
 }
 
@@ -196,7 +208,7 @@ function refresh() {
     for (var c in stage.children) 
         stage.children[c].removeAllEventListeners()
     stage.removeAllChildren()
-    str = initWaveStr()
+    str.reset()
 }
 
 function resize() {
@@ -205,7 +217,24 @@ function resize() {
 
 /*****************
  * SCENE LOADERS *
- ****************/ 
+ ****************/
+function pokemonEvent(evt) {
+    // handle the jumping pokemon
+    if (!evt.paused) {
+        pokemon.y += 3 * (pokemon['falling'] ? 1 : -1)
+        pokemon.rotation += 3
+
+        if (pokemon.y >= jumpBed.y - 15) {
+            pokemon['falling'] = false
+        }
+        else if (pokemon.y <= h/2 + pokemon.regY) {
+            pokemon['falling'] = true
+            // send a new wave if pulser is not making one
+            ctr = ctr < wavelen ? ctr : 0
+        }
+    }
+}
+
 function loadPokemonScene(name) {
  	// refresh
     refresh()
@@ -218,22 +247,8 @@ function loadPokemonScene(name) {
  	pokemon.x = (1/10)*w, pokemon.y = h/2
     pokemon.regX = pokemon.regY = pokemon.image.width/2
 
- 	pokemon.addEventListener('tick', function(evt) {
- 		// handle the jumping pokemon
- 		if (!evt.paused) {
-		    pokemon.y += 3 * (pokemon['falling'] ? 1 : -1)
-		    pokemon.rotation += 3
-
-		    if (pokemon.y >= jumpBed.y - 15) {
-		        pokemon['falling'] = false
-            }
-		    else if (pokemon.y <= h/2 + pokemon.regY) {
-		        pokemon['falling'] = true
-                // send a new wave if pulser is not making one
-                ctr = ctr < wavelen ? ctr : 0
-            }
- 		}
- 	})
+    if (playing)
+     	pokemon.addEventListener('tick', pokemonEvent)
 
  	stage.addChild(str.shape, pulser, jumpBed, pokemon)
  	loadReceiver()
@@ -264,7 +279,6 @@ function loadPokemonScene(name) {
  }
 
  function loadReceiver() {
-    //TODO
     stage.removeChild(receiver, rLamp)
     if (str.end != END.NONE) {
         receiver = str.end == END.FIXED ? objs['e_sad'].clone() : objs['e_dizzy'].clone()
@@ -318,7 +332,12 @@ function handlePlayPause() {
 	var btn_play = document.getElementById('btn_play')
 	var label = btn_play.textContent
 	btn_play.textContent = label == 'Play' ? 'Pause' : 'Play'
-	createjs.Ticker.paused = !createjs.Ticker.paused
+
+    if (playing)
+        pokemon.removeEventListener ('tick', pokemonEvent)
+    else
+        pokemon.addEventListener('tick', pokemonEvent)
+    playing = !playing
 }
 
 function handleSlider(pct, attr) {
@@ -347,16 +366,18 @@ function handleReload() {
 /*******************
  * HELPER METHODS  *
  *******************/
+
 function initWaveStr() {
     var str = WaveString(200)
     str.moveTo((1/10)*w + 10, (7/8)*w + 50, h/2 + 20);
+    str.update()
     return str
 }
 
 function cacheWave(len) {
     var lst = []
     for (var i = 0; i < len; i ++) 
-        lst[i] = Math.sin(2 * Math.PI * i / len) * amp
+        lst[i] = -Math.sin(2 * Math.PI * i / len) * amp
     lst = lst.concat(lst.slice(0).reverse());
     return lst
 }
