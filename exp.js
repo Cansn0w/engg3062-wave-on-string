@@ -367,7 +367,7 @@ function SHMCtl () {
         stage.addChild(obj.pokemon);
     }
         
-    obj.init = function () {stage.addChild(obj.jumpBed, obj.pokemon);components.push(obj);}
+    obj.init = function () {stage.addChild(obj.jumpBed, obj.pokemon); components.push(obj); obj.x = 0;}
     
     obj.exit = function() {
         stage.removeChild(obj.pokemon, obj.jumpBed); str.head.pos = 0; components.splice(components.indexOf(obj), 1);
@@ -465,6 +465,8 @@ function handlePulse() {
         var obj = {};
         obj.x = 0;
         obj.update = function() {
+            if (!playing)
+                return;
             obj.x += 1 / wavelen;
             if (obj.x > 1)
                 components.splice(components.indexOf(obj), 1);
