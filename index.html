@@ -60,8 +60,8 @@
 
     <body onload="init();">
 
-        <div style='height: 8%; max-height: 80px; padding: 10px'>
-            <img src="img/Usyd_new_logo.png" style='height: 100%; max-height: 100%;'>
+        <div style='height: 5%; max-height: 78px; padding: 4px'>
+            <img src="img/USydLogo.svg" style='height: 100%; max-height: 100%;'>
         </div>
 
         <div style="margin-left: 10px; margin-right: 10px; display: block;">
@@ -74,8 +74,10 @@
 
                     <table>
                         <tr>
-                            <td><button type="button" id='btn_restart' onclick="handleReload()">Restart</button></td>
-                            <td><button type="button" id='btn_play' onclick="handlePlayPause()">Play</button></td>
+                            <td><button type="button" id='btn_restart' onclick="handleReload()">Clear wave</button></td>
+                            <td><button type="button" id='btn_pause' onclick="handlePause()">Pause</button></td>
+                            <td><button type="button" id='btn_shm' onclick="handleSHM()">Start SHM</button></td>
+                            <td><button type="button" id='btn_pulse' onclick="handlePulse()">Pulse</button></td>
                             <td><select id = 'pokemonType' onchange="handleSelect()">
                                 <option value = 'pikachu'>Pikachu</option>
                                 <option value = 'snory'>Snory</option>
@@ -96,7 +98,7 @@
                             <td>Wave Function: </td>
                         </tr>
                         <tr>
-                            <td id = 'veloc'> V = f * &lambda; </td>
+                            <td id = 'veloc'> V = f x &lambda; </td>
                         </tr>
                     </table>
 
@@ -129,7 +131,7 @@
                         <input type="range"  value="100" id = 'tension' oninput="handleSlider((this.value/100), 'tension')" onchange="handleSlider((this.value/100), 'tension')">
                         <p class="slider">Damping</p>
                         <input type="range" value="0" id = 'damping' oninput="handleSlider((this.value/100), 'damping')" onchange="handleSlider((this.value/100), 'damping')">
-                        <p class="slider">Wave Length</p>
+                        <p class="slider" id = 'wavelen_text'>Wave Length</p>
                         <input type="range" value="50" id = 'wavelen' oninput="handleSlider((this.value/100), 'wavelen')" onchange="handleSlider((this.value/100), 'wavelen')">
                     </div>
                 </div>
