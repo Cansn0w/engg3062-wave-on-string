@@ -148,7 +148,7 @@ function StrEnd() {
 }
 
 // - - - - - WO SHI FEN GE XIAN - - - - - //
-var w = 1600, h = 900;
+var w = 1300, h = 650;
 var stage, canvas, modectl, endctl;
 var components = [];
 var loadQueue = null
