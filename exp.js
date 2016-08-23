@@ -270,8 +270,8 @@ function ModeCtl(str) {
             stage.addChild(obj.lamp, obj.tear);
             obj.tear.y = h/2 + (str.head.pos) * canvas.scale;
             obj.tear.on('pressmove', function(e) {
-                obj.tear.y = e.stageY / canvas.scale - 30;
-                str.head.pos = e.stageY / canvas.scale - 30 - h/2;
+                obj.tear.y = Math.min(Math.max(e.stageY / canvas.scale - 30, h/5), h * 4 / 5);
+                str.head.pos = obj.tear.y - h/2;
             })
         }),
         exit: (function(){
@@ -362,9 +362,12 @@ function SHMCtl () {
     obj.x = 0;
     
     obj.change = function (pokemon) {
-        stage.removeChild(obj.pokemon);
-        obj.pokemon = obj[pokemon];
-        stage.addChild(obj.pokemon);
+        if (components.indexOf(obj) > -1) {
+            stage.removeChild(obj.pokemon);
+            obj.pokemon = obj[pokemon];
+            stage.addChild(obj.pokemon);
+        } else
+            obj.pokemon = obj[pokemon];
     }
         
     obj.init = function () {stage.addChild(obj.jumpBed, obj.pokemon); components.push(obj); obj.x = 0;}
