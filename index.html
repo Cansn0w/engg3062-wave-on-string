@@ -1,10 +1,19 @@
 <!DOCTYPE html>
 <html>
     
+    <meta charset="UTF-8">
+    <meta name="description" content="Wave on string simulation, ENGG3062, the University of sydney.">
+    <meta name="keywords" content="usyd,engineering,science,physics,simulation,wave">
+    
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    
     <head>
         <title>Wave On String</title>
 
         <style>
+            html * {
+                font-family: 'Roboto', sans-serif !important;
+            }
             html, body {
                 width: 100%;
                 height: 100%;
@@ -12,6 +21,7 @@
                 border: 0px;
                 padding: 0px;
                 overflow: hidden;
+                position: fixed;
                 display: block;
             }
             
@@ -29,14 +39,10 @@
                 box-shadow: 4px 6px 6px 0 rgba(0,0,0,0.2);
             }
 
-            /*  Red:#CE1127;  Yellow:#F9B72B; Blue: #11406A ;  */
-
             button:hover {
                 border: 3px solid #11406A;
-                /*background-color: #666;*/
-                background-color: #F9B72B;
-                /*color: white;*/
-                color: #CE1127;
+                background-color: #666;
+                color: white;
             }
 
             button:active {
@@ -48,11 +54,6 @@
             input {
                 margin: 0px;
             }
-
-            .slider {
-                font: italic small-caps bolder 18px cursive;
-                color: #40b5ff;
-            }
             
         </style>
         
@@ -60,8 +61,9 @@
 
     <body onload="init();">
 
-        <div style='height: 5%; max-height: 78px; padding: 4px'>
-            <img src="img/USydLogo.svg" style='height: 100%; max-height: 100%;'>
+        <div style='height: 54px; max-height: 54px; padding: 4px' >
+            <a href="http://sydney.edu.au/" target="_blank"><img src="img/USydLogo.svg" alt="University of Sydney" style='height: 100%; max-height: 100%;'></a>
+            <span style="font-size: 22px; font-weight: bold; font-style: italic; float: right; margin-top: 12px;"><span>ENGG3062: Technology Education</span></span>
         </div>
 
         <div style="margin-left: 10px; margin-right: 10px; display: block;">
@@ -72,38 +74,23 @@
                         Canvas display is not supported by this browser.
                     </canvas>
 
-                    <table>
-                        <tr>
-                            <td><button type="button" id='btn_restart' onclick="handleReload()">Clear wave</button></td>
-                            <td><button type="button" id='btn_pause' onclick="handlePause()">Pause</button></td>
-                            <td><button type="button" id='btn_shm' onclick="handleSHM()">Start SHM</button></td>
-                            <td><button type="button" id='btn_pulse' onclick="handlePulse()">Pulse</button></td>
-                            <td><select id = 'pokemonType' onchange="handleSelect()">
-                                <option value = 'pikachu'>Pikachu</option>
-                                <option value = 'snory'>Snory</option>
-                                <option value = 'mew'>Mew</option>>
-                            </select>
-                            </td>
-                        </tr>
-                    </table>
-
                 </div>
 
                 <div style="display: table-cell; min-width: 4px; max-width: 4px"></div>
 
-                <div style="display: table-cell; width: 160px; max-width: 25%; vertical-align: top; padding: 8px;">
+                <div style="display: table-cell;min-width:160px; max-width: 160px; vertical-align: top; padding: 8px; background-color: #f8f8f8; font: 20px cursive">
 
-                    <table id='stat' style="font: italic small-caps bolder 18px cursive; color: #CE1127;">
+                    <table id='stat' style="color: #000;">
                         <tr>
-                            <td>Wave Function: </td>
+                            <td style='font-weight: bold;'>Wave Function:</td>
                         </tr>
                         <tr>
-                            <td id = 'veloc'> V = f x &lambda; </td>
+                            <td id = 'veloc' style="font-style: italic; text-align: center;">v = f x &lambda;</td>
                         </tr>
                     </table>
+                    
 
-                    <!-- <table id='mode' style=" font: italic small-caps bolder 18px cursive; color: #888;"> -->
-                    <table id='mode' style=" font: italic small-caps bolder 18px cursive; color: #CE1127;">    
+                    <table id='mode' style="margin-top: 20px;">    
                         <tr>
                             <td><img src="./img/diyLogo.png" style='height: 18px;'></td>
                             <td><img id = 'diyCheckBox' src="./img/unchecked.png" style='height: 18px;' onclick="handleCheckBox(this)"></td>
@@ -113,31 +100,47 @@
                             <td><img id = 'pokemonCheckBox' src="./img/checked.png" style='height: 18px;' onclick="handleCheckBox(this)"></td>
                         </tr>
                         <tr>
-                            <td>Fixed End</td>
+                            <td>Fixed end</td>
                             <td><input id='rb_fixed' type="radio" name="end" checked = "true" onclick="handleEndType(this)"></td>
                         </tr>
                         <tr>
-                            <td>Loose End</td>
+                            <td>Loose end</td>
                             <td><input id='rb_loose' type="radio" name="end" onclick="handleEndType(this)"></td>
                         </tr>
                         <tr>
-                            <td>No End</td>
+                            <td>No end</td>
                             <td><input id='rb_none' type="radio" name="end" onclick="handleEndType(this)"></td>
                         </tr>
                     </table>
 
                     <div style='margin-top: 20px;'>
-                        <p class="slider">Tension</p>
-                        <input type="range"  value="100" id = 'tension' oninput="handleSlider((this.value/100), 'tension')" onchange="handleSlider((this.value/100), 'tension')">
-                        <p class="slider">Damping</p>
+                        <span>Tension</span>
+                        <input type="range" value="100" id = 'tension' oninput="handleSlider((this.value/100), 'tension')" onchange="handleSlider((this.value/100), 'tension')">
+                        <span>Damping</span>
                         <input type="range" value="0" id = 'damping' oninput="handleSlider((this.value/100), 'damping')" onchange="handleSlider((this.value/100), 'damping')">
-                        <p class="slider" id = 'wavelen_text'>Wave Length</p>
+                        <span id = 'wavelen_text'>Wave Length</span>
                         <input type="range" value="50" id = 'wavelen' oninput="handleSlider((this.value/100), 'wavelen')" onchange="handleSlider((this.value/100), 'wavelen')">
                     </div>
                 </div>
 
                 <div style="display: table-cell; width: 100%;"></div>
             </div>
+            
+            <table>
+                <tr>
+                    <td><button type="button" id='btn_restart' onclick="handleReload()">Clear wave</button></td>
+                    <td><button type="button" id='btn_pause' onclick="handlePause()">Pause</button></td>
+                    <td><button type="button" id='btn_shm' onclick="handleSHM()">Start SHM</button></td>
+                    <td><button type="button" id='btn_pulse' onclick="handlePulse()">Pulse</button></td>
+                    <td><select id = 'pokemonType' onchange="handleSelect()">
+                        <option value = 'pikachu'>Pikachu</option>
+                        <option value = 'snory'>Snory</option>
+                        <option value = 'mew'>Mew</option>>
+                    </select>
+                    </td>
+                </tr>
+            </table>
+
         </div>
 
         <script src="easeljs-0.8.2.min.js"></script>

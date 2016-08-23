@@ -167,7 +167,7 @@ var maxTension = 2, maxDamping = 0.08, maxWavelen = 70;
 
 // wave string
 
-var str = WaveString(200);
+var str = WaveString(120);
 str.tension = (document.getElementById('tension').value / 100) * maxTension;
 str.damping = (document.getElementById('damping').value / 100) * maxDamping;
 
@@ -368,6 +368,7 @@ function SHMCtl () {
             stage.addChild(obj.pokemon);
         } else
             obj.pokemon = obj[pokemon];
+        obj.pokemon.y = h/2 + (h/2 - obj.jumpBed.y) * (Math.sin(obj.x*2*Math.PI) / 2 - 1/3);
     }
         
     obj.init = function () {stage.addChild(obj.jumpBed, obj.pokemon); components.push(obj); obj.x = 0;}
@@ -471,8 +472,10 @@ function handlePulse() {
             if (!playing)
                 return;
             obj.x += 1 / wavelen;
-            if (obj.x > 1)
+            if (obj.x > 1) {
+                str.head.pos = 0;
                 components.splice(components.indexOf(obj), 1);
+            }
             else
                 str.head.pos = -amp * Math.sin(obj.x*2*Math.PI);
         }
