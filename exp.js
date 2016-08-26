@@ -154,7 +154,7 @@ var components = [];
 var loadQueue = null
 
 var END = {FIXED: 0, LOOSE: 1, NONE: 2};
-var MODE = {SHM: 0, DIY: 1};
+var MODE = {SHM: 0, DIY: 1, Challenge: 2};
 
 // UI components
 var img = {}, pokemon;
@@ -284,6 +284,53 @@ function ModeCtl(str) {
         })
     }
     
+    obj[MODE.Challenge] = (function() {
+        var o = {};
+        o.save = {};
+        o.mods = ['btn_pulse', 'btn_shm', 'btn_noend',
+                  'btn_fixedend', 'btn_looseend', 'pokemonType',
+               'tension', 'tension_text',
+               'damping', 'damping_text',
+               'wavelen', 'wavelen_text'
+              ];
+        
+        o.init = (function(){
+            stage.addChild(obj.lamp, obj.tear);
+            for (var i = 0; i < o.mods.length; i++)
+                document.getElementById(o.mods[i]).style.display = 'none';
+            
+            obj.tear.y = h/2;
+            str.head.pos = 0;
+            str.reset();
+            
+            o.save.damping = str.damping;
+            o.save.tension = str.tension;
+            o.save.end = str.end;
+            
+            str.damping = 0.005;
+            str.tension = 2;
+            str.end = END.FIXED;
+            
+            obj.tear.on('pressmove', function(e) {
+                obj.tear.y = Math.min(Math.max(e.stageY / canvas.scale - 30, h * 3 / 7), h * 4 / 7);
+                str.head.pos = obj.tear.y - h/2;
+            });
+        });
+            
+        o.exit = (function(){
+            stage.removeChild(obj.lamp, obj.tear);
+            for (var i = 0; i < o.mods.length; i++)
+                document.getElementById(o.mods[i]).style.display = '';
+            
+            str.damping = o.save.damping;
+            str.tension = o.save.tension;
+            str.end = o.save.end;
+            
+        })
+        
+        return o;
+    })()
+    
     obj.mode = null;
     obj.enable = function (mode) {
         if (obj.mode != null)
@@ -397,14 +444,20 @@ function SHMCtl () {
  *******************/
 function handleCheckBox(cb) {
 	var id = cb.id;
+    document.getElementById('diyCheckBox').src = './img/unchecked.png';
+    document.getElementById('pokemonCheckBox').src = './img/unchecked.png';
+    document.getElementById('challengeCheckBox').src = './img/unchecked.png';
 	cb.src = './img/checked.png';
-    document.getElementById(id == 'diyCheckBox' ? 'pokemonCheckBox' : 'diyCheckBox').src = './img/unchecked.png';
-
-	// refresh canvas  
-    if (id == 'diyCheckBox')
+    
+    if (id == 'diyCheckBox') {
         modectl.enable(MODE.DIY);
-	else if (id == 'pokemonCheckBox')
+    }
+	else if (id == 'pokemonCheckBox'){
         modectl.enable(MODE.SHM);
+    }
+    else if (id == 'challengeCheckBox'){
+        modectl.enable(MODE.Challenge);
+    }
 }
 
 function handleEndType(rb) {
@@ -451,6 +504,8 @@ function handleReload() {
     // hack
     if (modectl.mode === MODE.DIY)
         modectl.enable(MODE.DIY);
+    else if (modectl.mode === MODE.Challenge)
+        modectl.enable(MODE.Challenge);
 }
 
 function handleSHM() {

@@ -63,7 +63,9 @@
 
         <div style='height: 54px; max-height: 54px; padding: 4px' >
             <a href="http://sydney.edu.au/" target="_blank"><img src="img/USydLogo.svg" alt="University of Sydney" style='height: 100%; max-height: 100%;'></a>
-            <span style="font-size: 22px; font-weight: bold; font-style: italic; float: right; margin-top: 12px;"><span>ENGG3062: Technology Education</span></span>
+            <span style="float: right; padding: 12px; padding-left: 36px; background: rgb(230,71,39)">
+                <span style="font-size: 22px; font-weight: bold;">ENGG3062: Technology Education</span>
+            </span>
         </div>
 
         <div style="margin-left: 10px; margin-right: 10px; display: block;">
@@ -90,33 +92,40 @@
                     </table>
                     
 
-                    <table id='mode' style="margin-top: 20px;">    
-                        <tr>
-                            <td><img src="./img/diyLogo.png" style='height: 18px;'></td>
-                            <td><img id = 'diyCheckBox' src="./img/unchecked.png" style='height: 18px;' onclick="handleCheckBox(this)"></td>
-                        </tr>
+                    <table id='mode' style="margin-top: 20px;">
                         <tr>
                             <td><img src="./img/pokemonLogo.png" style='height: 18px;'></td>
                             <td><img id = 'pokemonCheckBox' src="./img/checked.png" style='height: 18px;' onclick="handleCheckBox(this)"></td>
                         </tr>
                         <tr>
+                            <td><img src="./img/diyLogo.png" style='height: 18px;'></td>
+                            <td><img id = 'diyCheckBox' src="./img/unchecked.png" style='height: 18px;' onclick="handleCheckBox(this)"></td>
+                        </tr>
+                        <tr>
+                            <td><span style='height: 18px; color: #f22;'>Challenge &nbsp; &nbsp; &nbsp;</span>
+                            <td><img id = 'challengeCheckBox' src="./img/unchecked.png" style='height: 18px;' onclick="handleCheckBox(this)"></td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr id='btn_fixedend'>
                             <td>Fixed end</td>
                             <td><input id='rb_fixed' type="radio" name="end" checked = "true" onclick="handleEndType(this)"></td>
                         </tr>
-                        <tr>
+                        <tr id='btn_looseend'>
                             <td>Loose end</td>
                             <td><input id='rb_loose' type="radio" name="end" onclick="handleEndType(this)"></td>
                         </tr>
-                        <tr>
+                        <tr id='btn_noend'>
                             <td>No end</td>
                             <td><input id='rb_none' type="radio" name="end" onclick="handleEndType(this)"></td>
                         </tr>
                     </table>
 
                     <div style='margin-top: 20px;'>
-                        <span>Tension</span>
+                        <span id = 'tension_text'>Tension</span>
                         <input type="range" value="100" id = 'tension' oninput="handleSlider((this.value/100), 'tension')" onchange="handleSlider((this.value/100), 'tension')">
-                        <span>Damping</span>
+                        <span id = 'damping_text'>Damping</span>
                         <input type="range" value="0" id = 'damping' oninput="handleSlider((this.value/100), 'damping')" onchange="handleSlider((this.value/100), 'damping')">
                         <span id = 'wavelen_text'>Period</span>
                         <input type="range" value="50" id = 'wavelen' oninput="handleSlider((this.value/100), 'wavelen')" onchange="handleSlider((this.value/100), 'wavelen')">
